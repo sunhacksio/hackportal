@@ -1,7 +1,7 @@
 export const buttonDatas = [
-  { text: 'Hacker App', path: '/' },
-  { text: 'Mentor App', path: '/' },
-  { text: 'Sponsor App', path: '/' },
+  { text: 'Hacker Application', path: '/' },
+  { text: 'Mentor Application', path: '/' },
+  { text: 'Sponsor Application', path: '/' },
 ];
 
 export const navItems = [
@@ -12,8 +12,8 @@ export const navItems = [
 
 export const stats = [
   {
-    data: 'Big',
-    object: 'statistic 1',
+    data: '2021 Online Attendies',
+    object: '55455',
   },
   {
     data: 'Shocking',

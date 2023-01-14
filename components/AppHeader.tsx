@@ -23,24 +23,24 @@ export default function AppHeader() {
   useEffect(() => {
     if (firebase.auth().currentUser !== null && !firebase.auth().currentUser.emailVerified) {
       firebase
-        .auth()
-        .signOut()
-        .then(() => {
-          //signed out succesfully
-        })
-        .catch((error) => {
-          console.warn('Could not sign out');
-        });
+          .auth()
+          .signOut()
+          .then(() => {
+            //signed out succesfully
+          })
+          .catch((error) => {
+            console.warn('Could not sign out');
+          });
     }
 
     //creating dynamic nav items
     setDynamicNavItems((dynamicNavItems) => {
       if (
-        isSignedIn &&
-        profile &&
-        (profile.user.permissions[0] === 'admin' ||
-          profile.user.permissions[0] === 'super_admin') &&
-        dynamicNavItems.filter(({ text }) => text === 'Admin').length === 0
+          isSignedIn &&
+          profile &&
+          (profile.user.permissions[0] === 'admin' ||
+              profile.user.permissions[0] === 'super_admin') &&
+          dynamicNavItems.filter(({ text }) => text === 'Admin').length === 0
       ) {
         return [...dynamicNavItems, { text: 'Admin', path: '/admin' }];
       }
@@ -63,63 +63,78 @@ export default function AppHeader() {
   document.addEventListener('mousedown', (event) => {
     const targetComponent = document.querySelector('.profileDialog');
     if (
-      targetComponent !== null &&
-      !document.querySelector('.profileDialog').contains(event.target as Node)
+        targetComponent !== null &&
+        !document.querySelector('.profileDialog').contains(event.target as Node)
     ) {
       dismissDialog();
     }
   });
 
+  const headerStyle = {
+    background:
+        'linear-gradient(180deg, var(--color6), var(--color5) , var(--color4), var(--color4), var(--color5), var(--color6))',
+    '--color1': '#B05E40',
+    '--color2': '#EBC793',
+    '--color3': '#F7F6C6',
+    '--color4': '#64A4CC',
+    '--color5': '#375FBD',
+    '--color6': '#1C0D69',
+    border: 'black 1px solid',
+  };
+
   return (
-    <>
-      <div className="min-h-[4rem]"></div>
-      <header className="top-0 fixed justify-between flex flex-row w-full bg-indigo-100 items-center h-16 z-10 p-4">
-        <div className="flex justify-between items-center md:max-w-full md:justify-start md:w-9/12">
-          <Link href="/">
-            <a className="flex gap-2 order-2 relative ml-[6px] font-display self-center items-center md:order-1 md:ml-0">
-              {/* !change src */}
-              <Image src={'/assets/hp-logo.png'} width="30px" height="30px" />
-              <span className="text-[16px] font-black md:z-0 md:text-2xl">HackPortal</span>
-            </a>
-          </Link>
-          {/* Smartphone nav */}
-          <div onClick={toggleMenu} className={'relative md:hidden'}>
-            {mobileIcon ? <MenuIcon /> : <CloseIcon />}
-            <ul
-              className={`${
-                showMenu ? 'translate-x-0' : '-translate-x-full'
-              } transform transition-all ease-out duration-300 flex w-6/12 h-screen border-2 border-black flex-col bg-white fixed top-0 left-0 z-[-1] pt-16`}
-            >
+      <>
+        <div className="min-h-[4rem]"></div>
+        <header
+            className="top-0 fixed justify-between flex flex-row w-full  items-center h-16 z-10 p-4"
+            style={headerStyle}
+        >
+          <div className="flex justify-between items-center md:max-w-full md:justify-start md:w-9/12">
+            <Link href="/">
+              <a className="flex gap-2 order-2 relative ml-[6px] font-display self-center items-center md:order-1 md:ml-0">
+                {/* !change src */}
+                <Image src={'/assets/hp-logo.png'} width="30px" height="30px" />
+                <span className="text-[16px] font-black md:z-0 md:text-2xl">sunhacks</span>
+              </a>
+            </Link>
+            {/* Smartphone nav */}
+            <div onClick={toggleMenu} className={'relative md:hidden'}>
+              {mobileIcon ? <MenuIcon /> : <CloseIcon />}
+              <ul
+                  className={`${
+                      showMenu ? 'translate-x-0' : '-translate-x-full'
+                  } transform transition-all ease-out duration-300 flex w-6/12 h-screen border-2 border-black flex-col bg-white fixed top-0 left-0 z-[-1] pt-16`}
+              >
+                {dynamicNavItems.map((item) => (
+                    <Link key={item.text} href={item.path}>
+                      <a className="border-b-2 first:border-t-2 border-black p-4 py-6 hover:bg-[#D8F8FF]">
+                        <p className="text-sm font-bold">{item.text}</p>
+                      </a>
+                    </Link>
+                ))}
+              </ul>
+            </div>
+            {/* PC nav */}
+            <div className="hidden text-xs order-2 md:flex items-center md:text-left lg:ml-12">
               {dynamicNavItems.map((item) => (
-                <Link key={item.text} href={item.path}>
-                  <a className="border-b-2 first:border-t-2 border-black p-4 py-6 hover:bg-[#D8F8FF]">
-                    <p className="text-sm font-bold">{item.text}</p>
-                  </a>
-                </Link>
+                  <Link key={item.text} href={item.path}>
+                    <a>
+                      <p className="md:mx-4 text-sm font-bold">{item.text}</p>
+                    </a>
+                  </Link>
               ))}
-            </ul>
+            </div>
           </div>
-          {/* PC nav */}
-          <div className="hidden text-xs order-2 md:flex items-center md:text-left lg:ml-12">
-            {dynamicNavItems.map((item) => (
-              <Link key={item.text} href={item.path}>
-                <a>
-                  <p className="md:mx-4 text-sm font-bold">{item.text}</p>
-                </a>
-              </Link>
-            ))}
+          <div className="flex lg:mr-8">
+            <button
+                className="font-header font-bold rounded-full border-2 border-black text-sm px-8 py-1"
+                onClick={toggleDialog}
+            >
+              {!user || !isSignedIn ? 'Sign in' : hasProfile ? 'Profile' : 'Register'}
+            </button>
           </div>
-        </div>
-        <div className="flex lg:mr-8">
-          <button
-            className="font-header font-bold bg-white rounded-full border-2 border-black text-sm px-8 py-1"
-            onClick={toggleDialog}
-          >
-            {!user || !isSignedIn ? 'Sign in' : hasProfile ? 'Profile' : 'Register'}
-          </button>
-        </div>
-        {showProfileDialog && <ProfileDialog onDismiss={dismissDialog} />}
-      </header>
-    </>
+          {showProfileDialog && <ProfileDialog onDismiss={dismissDialog} />}
+        </header>
+      </>
   );
 }
